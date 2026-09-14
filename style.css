@@ -100,7 +100,7 @@ select {
 #ocultar,
 #mostrar {
     position: fixed;
-    right: 15px;
+    left: 15px;
     bottom: 15px;
     transform: translateY(-50%);
     display: flex;
@@ -123,4 +123,28 @@ select {
 
 .btn:active {
     background: rgba(0, 0, 0, 0.9);
+}
+
+.model-btn {
+    display: block;
+    width: 220px;
+    padding: 10px;
+    margin: 6px 0;
+    background: #838383;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.model-btn:hover {
+    background: #333;
+}
+
+.model-btn.active {
+    background: #05db0c;
+    color: white;
+    font-weight: bold;
 }

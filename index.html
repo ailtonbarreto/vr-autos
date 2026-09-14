@@ -21,21 +21,16 @@
 
         <span class="material-symbols-outlined" id="close_menu">close</span>
 
-        <select id="modelSelect">
+        <div id="modelButtons">
 
-            <option value="">Selecione um modelo</option>
+            <button class="model-btn" data-src="./autos/chevrolet_corvette_stingray.glb">Corvete Stingray</button>
+            <button class="model-btn" data-src="./autos/ferrari_f430.glb">Ferrari F430</button>
+            <button class="model-btn" data-src="./autos/volkswagen_t-cross_2021.glb">T-Cross 2021 TSI</button>
+            <button class="model-btn" data-src="./autos/hyundai_creta_2023.glb">Creta 2023</button>
+            <button class="model-btn" data-src="./autos/lamborghini_aventador.glb">Lamborghini Aventador</button>
+            <button class="model-btn" data-src="./autos/Porsche_911_carrera_95.glb">Porsche 911 (95)</button>
 
-            <option value="./autos/chevrolet_corvette_stingray.glb">Corvete Stingray</option>
-            <option value="./autos/ferrari_f430.glb">Ferrari F430</option>
-            <option value="./autos/mclaren_600lt.glb">Mclaren 600LT</option>
-            <option value="./autos/volkswagen_t-cross_2021.glb">T-Cross 2021 TSI</option>
-            <option value="./autos/hyundai_creta_2023.glb">Creta 2023</option>
-            <option value="./autos/lamborghini_aventador.glb">Lamborghini Aventador</option>
-            <option value="./autos/hyundai_tucson_L270t.glb">Hyundai Tucson L270T</option>
-
-
-        </select>
-
+        </div>
 
     </nav>
 
@@ -80,7 +75,7 @@
 
     <!----------------------------------------------------------------------------->
 
-    <a-scene vr-mode-ui="enabled: false" embedded
+    <a-scene vr-mode-ui="true: false" embedded
         arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
 
         <a-entity id="objeto" position="0 1 -4" rotation="0 -90 0">
@@ -103,22 +98,15 @@
         const objeto = document.querySelector("#objeto").object3D;
         const modelo = document.querySelector("#modelo");
 
-        modelo.addEventListener("model-loaded", () => {
-            // Resetar posição
-            objeto.position.set(0, 1, -4);
+          modelo.addEventListener("model-loaded", () => {
 
-            // Resetar rotação
-            objeto.rotation.set(
-                0,
-                THREE.Math.degToRad(-90),
-                0
-            );
+                  objeto.position.set(0, 1, -4);
 
-            // Resetar escala
-            modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
+            objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
 
-            // Ajuste automático baseado no tamanho real do modelo
-            const obj = modelo.getObject3D("mesh");
+                modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
+
+                   const obj = modelo.getObject3D("mesh");
             if (!obj) return;
 
             const box = new THREE.Box3().setFromObject(obj);
@@ -135,8 +123,6 @@
             });
         });
 
-
-        /* ZOOM */
         function getPinchDistance(e) {
             const dx = e.touches[0].clientX - e.touches[1].clientX;
             const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -188,101 +174,66 @@
             objeto.position.z = newPos.z;
         });
 
-        /* ROT Y */
         document.querySelector("#rotateLeft").addEventListener("click", () => {
-            objeto.rotation.y += THREE.Math.degToRad(5);
+            objeto.rotation.y += THREE.Math.degToRad(3);
         });
-
         document.querySelector("#rotateRight").addEventListener("click", () => {
-            objeto.rotation.y -= THREE.Math.degToRad(5);
+            objeto.rotation.y -= THREE.Math.degToRad(3);
         });
 
-        /* MOVE Y */
-        document.querySelector("#moveUp").addEventListener("click", () => {
-            objeto.position.y += 0.2;
+          document.querySelector("#moveUp").addEventListener("click", () => {
+            objeto.position.y += 0.1;
         });
-
         document.querySelector("#moveDown").addEventListener("click", () => {
-            objeto.position.y -= 0.2;
+            objeto.position.y -= 0.1;
         });
 
-        /* PITCH (X) */
-        document.querySelector("#tiltForward").addEventListener("click", () => {
-            objeto.rotation.x += THREE.Math.degToRad(5);
+            document.querySelector("#tiltForward").addEventListener("click", () => {
+            objeto.rotation.x += THREE.Math.degToRad(3);
         });
-
         document.querySelector("#tiltBackward").addEventListener("click", () => {
-            objeto.rotation.x -= THREE.Math.degToRad(5);
+            objeto.rotation.x -= THREE.Math.degToRad(3);
         });
 
-        /* ROLL (Z) — ARFAGEM REAL */
-        document.querySelector("#rollRight").addEventListener("click", () => {
-            objeto.rotation.z += THREE.Math.degToRad(5);
+            document.querySelector("#rollRight").addEventListener("click", () => {
+            objeto.rotation.z += THREE.Math.degToRad(3);
         });
-
         document.querySelector("#rollLeft").addEventListener("click", () => {
-            objeto.rotation.z -= THREE.Math.degToRad(5);
+            objeto.rotation.z -= THREE.Math.degToRad(3);
         });
 
-        /* ZOOM DESKTOP (botões + e -) */
         document.querySelector("#zoomIn").addEventListener("click", () => {
             let scale = modelo.getAttribute("scale").x;
-            scale += scale * 0.15; // aumenta 15%
+            scale += scale * 0.15;
             modelo.setAttribute("scale", { x: scale, y: scale, z: scale });
         });
 
         document.querySelector("#zoomOut").addEventListener("click", () => {
             let scale = modelo.getAttribute("scale").x;
-            scale -= scale * 0.15; // diminui 15%
-            if (scale < 0.0001) scale = 0.0001; // limite mínimo
+            scale -= scale * 0.15;
+            if (scale < 0.0001) scale = 0.0001;
             modelo.setAttribute("scale", { x: scale, y: scale, z: scale });
         });
 
 
-        document.querySelector("#modelSelect").addEventListener("change", (e) => {
-            const newModelURL = e.target.value;
+        const modelButtons = document.querySelectorAll(".model-btn");
 
+        modelButtons.forEach(btn => {
+            btn.addEventListener("click", () => {
 
-            modelo.addEventListener("model-loaded", () => {
-                const obj = modelo.getObject3D("mesh");
-                if (!obj) return;
+                modelButtons.forEach(b => b.classList.remove("active"));
 
+                btn.classList.add("active");
 
-                const box = new THREE.Box3().setFromObject(obj);
-                const size = box.getSize(new THREE.Vector3());
+                            const newModelURL = btn.dataset.src;
+          
+                modelo.setAttribute("src", newModelURL);
 
-
-                const maxDim = Math.max(size.x, size.y, size.z);
-
-
-                const desiredSize = 3;
-
-                const scaleFactor = desiredSize / maxDim;
-
-
-                modelo.setAttribute("scale", {
-                    x: scaleFactor,
-                    y: scaleFactor,
-                    z: scaleFactor
-                });
+                objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
+                objeto.position.set(0, 1, -4);
+                modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
             });
-
-
-            // troca o GLB
-            modelo.setAttribute("src", newModelURL);
-
-            // opcional: resetar escala ao trocar
-            modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
-
-            // opcional: resetar rotação
-            objeto.rotation.set(0, -90 * Math.PI / 180, 0);
-
-            // opcional: resetar posição
-            objeto.position.set(0, 1, -4);
         });
-
-
-
     </script>
 
 </body>
