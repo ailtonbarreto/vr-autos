@@ -1,32 +1,85 @@
-<html>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+
+    <!-- AR.js com marcador -->
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
-    <link rel="shortcut icon" href="../vr-glasses.ico" type="image/x-icon">
+
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../menu.css">
+
+    <script src="../menu.js" defer></script>
+    <script src="../hide.js" defer></script>
+
+    <title>AR com Marcador</title>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
+<body style="margin:0; overflow:hidden;">
 
-    <a-scene vr-mode-ui="enabled: false" embedded
+    <!-- MENU -->
+    <span class="material-symbols-outlined open-menu" id="open_menu">menu</span>
+
+    <nav id="menu">
+        <span class="material-symbols-outlined" id="close_menu">close</span>
+
+        <div id="modelButtons">
+
+            <button class="model-btn" data-src="../autos/chevrolet_corvette_stingray.glb">Corvete Stingray</button>
+            <button class="model-btn" data-src="../autos/ferrari_f430.glb">Ferrari F430</button>
+            <button class="model-btn" data-src="../autos/volkswagen_t-cross_2021.glb">T-Cross 2021 TSI</button>
+            <button class="model-btn" data-src="../autos/hyundai_creta_2023.glb">Creta 2023</button>
+            <button class="model-btn" data-src="../autos/lamborghini_aventador.glb">Lamborghini Aventador</button>
+            <button class="model-btn" data-src="../autos/Porsche_911_carrera_95.glb">Porsche 911 (95)</button>
+        </div>
+    </nav>
+
+    <!-- CONTROLES -->
+    <div class="controls-zoom">
+        <div class="btn" id="zoomIn">＋</div>
+        <div class="btn" id="zoomOut">－</div>
+    </div>
+
+    <div class="controls-bottom">
+        <div class="btn" id="rotateRight">◀️</div>
+        <div class="btn" id="rotateLeft">▶️</div>
+    </div>
+
+    <div class="controls_rolagem">
+        <div class="btn" id="rollLeft">🔽</div>
+        <div class="btn" id="rollRight">🔼</div>
+    </div>
+
+    <div class="controls-leftside">
+        <div class="btn" id="tiltForward">🔼</div>
+        <div class="btn" id="tiltBackward">🔽</div>
+    </div>
+
+    <div class="controls-side">
+        <div class="btn" id="moveUp">🔼</div>
+        <div class="btn" id="moveDown">🔽</div>
+    </div>
+
+
+    <!-- CENA AR COM MARCADOR -->
+    <a-scene embedded vr-mode-ui="enabled: false"
         arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
 
-
-        <!-- <a-marker type="pattern" url="marker.patt"> -->
+        <!-- MARCADOR HIRO -->
         <a-marker type="hiro">
-
-            <a-entity>
-                <a-gltf-model src="../glb/sukhoi.glb" scale="0.009 0.009 0.009" rotation="0 0 0"
-                    position="0 0 0"></a-gltf-model>
+            <a-entity id="objeto" position="0 0 0" rotation="0 0 0">
+                <a-gltf-model id="modelo" src="" scale="1 1 1"></a-gltf-model>
             </a-entity>
         </a-marker>
 
-        <!-- Câmera normal -->
         <a-entity camera></a-entity>
 
     </a-scene>
+
+    <script src="script.js"></script>
 
 </body>
 

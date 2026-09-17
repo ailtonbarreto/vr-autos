@@ -1,4 +1,5 @@
 <html>
+
 <head>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
@@ -7,49 +8,53 @@
 <body style="margin: 0; overflow: hidden;">
 
 
-<iframe id="dashboard"
+    <iframe id="dashboard"
     title="Dashboard Comercial"
-    src="https://ailtonbarreto.github.io/diario-da-obra/" frameborder="0" allowFullScreen="true"
+    src="https://www.ailtonbarreto.com.br/projects/bim5d.html" frameborder="0" allowFullScreen="true"
     style="
         display:block;
         visibility:hidden;
         position:fixed;
-        top:5%;
         border-radius: 1vw;
-        left:5%;
-        width:90%;
-        height:90%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100vw;
+        height: 100vh;
         z-index:9999;
         background:white;
         opacity: 0.9;
     ">
 </iframe>
 
-<!-- CENA AR -->
-<a-scene embedded arjs="sourceType: webcam;">
+    <!-- CENA AR -->
+    <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false">
 
-    <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt">
+        <!-- <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt"> -->
+        <a-marker id="hiroMarker" type="hiro">
 
-    </a-marker>
 
-    <a-entity camera></a-entity>
-</a-scene>
+        </a-marker>
 
-<script>
-    const marker = document.getElementById("hiroMarker");
-    const dash = document.getElementById("dashboard");
+        <a-entity camera></a-entity>
+    </a-scene>
 
-    marker.addEventListener("markerFound", () => {
-        console.log("Hiro detectado!");
-        dash.style.display = "block";
-        dash.style.visibility = "visible";
-    });
+    <script>
+        const marker = document.getElementById("hiroMarker");
+        const dash = document.getElementById("dashboard");
 
-    marker.addEventListener("markerLost", () => {
-        console.log("Hiro perdido!");
-        dash.style.display = "none";
-    });
-</script>
+        marker.addEventListener("markerFound", () => {
+            console.log("Hiro detectado!");
+            dash.style.display = "block";
+            dash.style.visibility = "visible";
+        });
+
+        marker.addEventListener("markerLost", () => {
+            console.log("Hiro perdido!");
+            dash.style.display = "none";
+        });
+    </script>
 
 </body>
+
 </html>
