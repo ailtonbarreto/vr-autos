@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8" />
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
+
+    <title>AR Canvas 3D</title>
+</head>
+
+<body style="margin:0; overflow:hidden;">
+
+    <!-- CANVAS REAL -->
+    <canvas id="myCanvas" width="800" height="500"
+        style="
+            position:absolute;
+            top:0;
+            left:0;
+            opacity:0;
+            pointer-events:none;
+            z-index:-1;
+        ">
+    </canvas>
+
+    <script>
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+
+        // CARREGAR IMAGEM NO CANVAS
+        const img = new Image();
+        img.src = "dash.png"; // <-- AQUI VOCÊ USA SRC DO JEITO QUE QUER
+
+        img.onload = () => {
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        };
+    </script>
+
+    <!-- CENA AR -->
+    <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false">
+
+        <!-- MARCADOR -->
+        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt">
+
+            <!-- PLANO 3D COM TEXTURA DO CANVAS -->
+            <a-plane id="panel"
+                     width="3"
+                     height="2"
+                     position="0 0 0"
+                     rotation="-90 0 0"
+                     material="src: #myCanvas">
+            </a-plane>
+
+        </a-marker>
+
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+        const marker = document.getElementById("hiroMarker");
+        const panelEl = document.getElementById("panel");
+
+        marker.addEventListener("markerFound", () => {
+            panelEl.setAttribute("visible", true);
+        });
+
+        marker.addEventListener("markerLost", () => {
+            panelEl.setAttribute("visible", false);
+        });
+    </script>
+
+</body>
+
+</html>

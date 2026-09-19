@@ -15,24 +15,21 @@
         display:block;
         visibility:hidden;
         position:fixed;
-        border-radius: 1vw;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         width: 100vw;
         height: 100vh;
         z-index:9999;
-        background:white;
-        opacity: 0.9;
+        background:rgb(1, 40, 99);
+        opacity: 0.8;
     ">
 </iframe>
 
     <!-- CENA AR -->
     <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false">
 
-        <!-- <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt"> -->
-        <a-marker id="hiroMarker" type="hiro">
-
+        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt">
 
         </a-marker>
 

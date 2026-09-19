@@ -9,7 +9,7 @@ const modelo = document.querySelector("#modelo");
 modelo.addEventListener("model-loaded", () => {
 
     objeto.position.set(0, 0, 0);
-    objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
+    objeto.rotation.set(0, THREE.Math.degToRad(90), 0);
 
     modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
 
