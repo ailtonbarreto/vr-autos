@@ -29,7 +29,8 @@
     <!-- CENA AR -->
     <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false">
 
-        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt">
+        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt" smooth="true" smoothCount="10" smoothTolerance="0.01"
+            smoothThreshold="5">
 
         </a-marker>
 
