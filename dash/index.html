@@ -5,51 +5,82 @@
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.js"></script>
 </head>
 
-<body style="margin: 0; overflow: hidden;">
+<body style="
+    margin: 0;
+    overflow: hidden;
+    background-image: url('bg.png');
+    background-size: cover;
+    background-position: center calc(100% + 150px);
+"
+>
 
+    <div id="scan-wrapper" style="
+        position: absolute;
+        top: 2vh;
+        left: 20vw;
+        width: 55vw;
+        height: 30vh;
+        border: 4px solid rgb(0, 110, 255);
+        border-radius: 10px;
+        z-index: 9998;
+        overflow: hidden;
+        pointer-events: none;
+    ">
+
+        <div id="camera-feed" style=" width:100%; height:100%;"></div>
+
+    </div>
 
     <iframe id="dashboard"
-    title="Dashboard Comercial"
-    src="https://www.ailtonbarreto.com.br/projects/bim5d.html" frameborder="0" allowFullScreen="true"
-    style="
-        display:block;
-        visibility:hidden;
-        position:fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100vw;
-        height: 100vh;
-        z-index:9999;
-        background:rgb(1, 40, 99);
-        opacity: 0.8;
-    ">
-</iframe>
+        src="https://www.ailtonbarreto.com.br/projects/bim5d.html"
+        frameborder="0"
+        allowFullScreen="true"
+        style="
+            position: fixed;
+            top: 35vh;
+            left: 2vw;
+            width: 96vw;
+            height: 62vh;
+            border-radius: 10px;
+            visibility: hidden;
+            z-index:9999;
+        ">
+    </iframe>
 
-    <!-- CENA AR -->
-    <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false">
+    <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false" style="z-index:1;">
 
-        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt" smooth="true" smoothCount="10" smoothTolerance="0.01"
-            smoothThreshold="5">
-
+        <a-marker id="hiroMarker" type="pattern" url="dashmarker.patt"
+            smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5">
         </a-marker>
 
         <a-entity camera></a-entity>
     </a-scene>
 
     <script>
+        // Move o vídeo da câmera para dentro da área de scan
+        const observer = new MutationObserver(() => {
+            const video = document.querySelector("video");
+            if (video) {
+                video.style.width = "100%";
+                video.style.height = "100%";
+                video.style.objectFit = "cover";
+                document.getElementById("camera-feed").appendChild(video);
+                observer.disconnect();
+            }
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // Eventos do marcador
         const marker = document.getElementById("hiroMarker");
         const dash = document.getElementById("dashboard");
 
         marker.addEventListener("markerFound", () => {
-            console.log("Hiro detectado!");
-            dash.style.display = "block";
             dash.style.visibility = "visible";
         });
 
         marker.addEventListener("markerLost", () => {
-            console.log("Hiro perdido!");
-            dash.style.display = "none";
+            dash.style.visibility = "hidden";
         });
     </script>
 
