@@ -1,12 +1,17 @@
 let dragging = false;
 let pinchStartDistance = 0;
 let initialScale = 2;
+const spinner = document.getElementById("loadingSpinner");
+
 
 const objeto = document.querySelector("#objeto").object3D;
 const modelo = document.querySelector("#modelo");
 
 /* AUTO AJUSTE AO CARREGAR MODELO */
 modelo.addEventListener("model-loaded", () => {
+
+    spinner.classList.add("esconder");
+
 
     objeto.position.set(0, 0, 0);
     objeto.rotation.set(0, THREE.Math.degToRad(90), 0);
@@ -132,6 +137,8 @@ const modelButtons = document.querySelectorAll(".model-btn");
 
 modelButtons.forEach(btn => {
     btn.addEventListener("click", () => {
+        spinner.classList.remove("esconder");
+
 
         modelButtons.forEach(b => b.classList.remove("active"));
         btn.classList.add("active");

@@ -20,6 +20,9 @@
 
 <body style="margin:0; overflow:hidden;">
 
+    <div id="loadingSpinner" class="spinner esconder"></div>
+
+
     <!-- MENU -->
     <span class="material-symbols-outlined open-menu" id="open_menu">menu</span>
 
@@ -71,7 +74,7 @@
         arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
 
         <!-- MARCADOR HIRO -->
-        <a-marker type="hiro">
+        <a-marker type="pattern" url="marker.patt">
             <a-entity id="objeto" position="0 0 0" rotation="0 0 0">
                 <a-gltf-model id="modelo" src="" scale="1 1 1"></a-gltf-model>
             </a-entity>
