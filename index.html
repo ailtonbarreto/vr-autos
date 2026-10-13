@@ -1,5 +1,5 @@
+<!doctype html>
 <html>
-
 <head>
     <meta charset="UTF-8" />
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
@@ -12,7 +12,6 @@
     <link rel="shortcut icon" href="vr-glasses.ico" type="image/x-icon">
     <title>VR Autos</title>
 </head>
-
 <body>
 
     <div id="loadingSpinner" class="spinner esconder"></div>
@@ -20,20 +19,15 @@
     <span class="material-symbols-outlined open-menu hide" id="open_menu">menu</span>
 
     <nav id="menu">
-
         <span class="material-symbols-outlined" id="close_menu">close</span>
-
         <div id="modelButtons">
-
             <button class="model-btn" data-src="./autos/chevrolet_corvette_stingray.glb">Corvete Stingray</button>
             <button class="model-btn" data-src="./autos/ferrari_f430.glb">Ferrari F430</button>
             <button class="model-btn" data-src="./autos/volkswagen_t-cross_2021.glb">T-Cross 2021 TSI</button>
             <button class="model-btn" data-src="./autos/hyundai_creta_2023.glb">Creta 2023</button>
             <button class="model-btn" data-src="./autos/lamborghini_aventador.glb">Lamborghini Aventador</button>
             <button class="model-btn" data-src="./autos/Porsche_911_carrera_95.glb">Porsche 911 (95)</button>
-
         </div>
-
     </nav>
 
     <div class="controls-zoom hide">
@@ -41,23 +35,18 @@
         <div class="btn" id="zoomOut">－</div>
     </div>
 
-
     <!-- Rotação Y -->
     <div class="controls-bottom hide">
-
         <div class="btn" id="rotateRight">◀️</div>
         <div class="btn" id="rotateLeft">▶️</div>
     </div>
 
     <div class="controls_rolagem hide">
-
         <div class="btn" id="rollLeft">🔽</div>
         <div class="btn" id="rollRight">🔼</div>
-
     </div>
 
     <!-- Barra lateral -->
-
     <div class="controls-leftside hide">
         <div class="btn" id="tiltForward">🔼</div>
         <div class="btn" id="tiltBackward">🔽</div>
@@ -66,32 +55,23 @@
     <div class="controls-side hide">
         <div class="btn" id="moveUp">🔼</div>
         <div class="btn" id="moveDown">🔽</div>
-
     </div>
 
     <div class="controls-zoom">
         <div class="material-symbols-outlined" id="ocultar">visibility_off</div>
         <div class="material-symbols-outlined" id="mostrar" style="display: none;">visibility</div>
-
     </div>
 
     <!----------------------------------------------------------------------------->
 
     <a-scene vr-mode-ui="false" embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
-
         <a-entity id="objeto" position="0 1 -4" rotation="0 -90 0">
-
-            <a-gltf-model id="modelo" src="" scale="1 1 1">
-
-            </a-gltf-model>
+            <a-gltf-model id="modelo" src="" scale="1 1 1"></a-gltf-model>
         </a-entity>
-
         <a-camera></a-camera>
-
     </a-scene>
 
     <script>
-
         let dragging = false;
         let pinchStartDistance = 0;
         let initialScale = 2;
@@ -145,7 +125,9 @@
         window.addEventListener("touchend", () => dragging = false);
 
         window.addEventListener("touchmove", e => {
-            if (locked) return; // não move se travado
+            // Se travado, não executamos nenhum reposicionamento relativo à câmera.
+            // Mantemos apenas o pinch (zoom) bloqueado também quando travado.
+            if (locked) return;
 
             if (e.touches.length === 2) {
                 const pinchDistance = getPinchDistance(e);
@@ -177,7 +159,7 @@
             objeto.position.z = newPos.z;
         });
 
-        // Botão de travar/destravar
+        // Botão de travar/destravar (adicionado dentro do container de controles para manter estilo)
         const lockBtn = document.createElement("div");
         lockBtn.className = "btn";
         lockBtn.id = "lockBtn";
@@ -185,6 +167,15 @@
         document.querySelector(".controls-zoom").appendChild(lockBtn);
 
         lockBtn.addEventListener("click", () => {
+            // Ao travar, fixamos a posição atual do objeto no espaço mundial
+            // Convertendo a posição mundial para posição local do pai para "ancorar" corretamente
+            if (!locked) {
+                const worldPos = new THREE.Vector3();
+                objeto.getWorldPosition(worldPos);
+                // converte world -> local do pai
+                if (objeto.parent) objeto.parent.worldToLocal(worldPos);
+                objeto.position.copy(worldPos);
+            }
             locked = !locked;
             lockBtn.textContent = locked ? "🔓" : "🔒";
         });
@@ -242,10 +233,7 @@
                 modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
             });
         });
-
-
     </script>
 
 </body>
-
 </html>
