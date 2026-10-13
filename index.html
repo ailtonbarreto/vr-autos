@@ -15,6 +15,8 @@
 
 <body>
 
+    <div id="loadingSpinner" class="spinner esconder"></div>
+
     <span class="material-symbols-outlined open-menu hide" id="open_menu">menu</span>
 
     <nav id="menu">
@@ -75,8 +77,7 @@
 
     <!----------------------------------------------------------------------------->
 
-    <a-scene vr-mode-ui="true: false" embedded
-        arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
+    <a-scene vr-mode-ui="false: false" embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
 
         <a-entity id="objeto" position="0 1 -4" rotation="0 -90 0">
 
@@ -94,19 +95,21 @@
         let dragging = false;
         let pinchStartDistance = 0;
         let initialScale = 2;
+        let locked = false; // NOVO: controla se o objeto está travado
+        const spinner = document.getElementById("loadingSpinner");
 
         const objeto = document.querySelector("#objeto").object3D;
         const modelo = document.querySelector("#modelo");
 
-          modelo.addEventListener("model-loaded", () => {
+        modelo.addEventListener("model-loaded", () => {
+            spinner.classList.add("esconder");
 
-                  objeto.position.set(0, 1, -4);
-
+            objeto.position.set(0, 1, -4);
             objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
 
-                modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
+            modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
 
-                   const obj = modelo.getObject3D("mesh");
+            const obj = modelo.getObject3D("mesh");
             if (!obj) return;
 
             const box = new THREE.Box3().setFromObject(obj);
@@ -130,6 +133,7 @@
         }
 
         window.addEventListener("touchstart", e => {
+            if (locked) return; // NOVO: bloqueia se travado
             if (e.touches.length === 2) {
                 pinchStartDistance = getPinchDistance(e);
                 initialScale = modelo.getAttribute("scale").x;
@@ -141,6 +145,7 @@
         window.addEventListener("touchend", () => dragging = false);
 
         window.addEventListener("touchmove", e => {
+            if (locked) return; // NOVO: bloqueia se travado
 
             if (e.touches.length === 2) {
                 const pinchDistance = getPinchDistance(e);
@@ -181,21 +186,21 @@
             objeto.rotation.y -= THREE.Math.degToRad(3);
         });
 
-          document.querySelector("#moveUp").addEventListener("click", () => {
+        document.querySelector("#moveUp").addEventListener("click", () => {
             objeto.position.y += 0.1;
         });
         document.querySelector("#moveDown").addEventListener("click", () => {
             objeto.position.y -= 0.1;
         });
 
-            document.querySelector("#tiltForward").addEventListener("click", () => {
+        document.querySelector("#tiltForward").addEventListener("click", () => {
             objeto.rotation.x += THREE.Math.degToRad(3);
         });
         document.querySelector("#tiltBackward").addEventListener("click", () => {
             objeto.rotation.x -= THREE.Math.degToRad(3);
         });
 
-            document.querySelector("#rollRight").addEventListener("click", () => {
+        document.querySelector("#rollRight").addEventListener("click", () => {
             objeto.rotation.z += THREE.Math.degToRad(3);
         });
         document.querySelector("#rollLeft").addEventListener("click", () => {
@@ -215,18 +220,18 @@
             modelo.setAttribute("scale", { x: scale, y: scale, z: scale });
         });
 
-
         const modelButtons = document.querySelectorAll(".model-btn");
 
         modelButtons.forEach(btn => {
             btn.addEventListener("click", () => {
+                spinner.classList.remove("esconder");
 
                 modelButtons.forEach(b => b.classList.remove("active"));
 
                 btn.classList.add("active");
 
-                            const newModelURL = btn.dataset.src;
-          
+                const newModelURL = btn.dataset.src;
+
                 modelo.setAttribute("src", newModelURL);
 
                 objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
@@ -234,6 +239,22 @@
                 modelo.setAttribute("scale", { x: 2, y: 2, z: 2 });
             });
         });
+
+        // NOVO: botão de travar/destravar
+        const lockBtn = document.createElement("button");
+        lockBtn.textContent = "🔒 Travar";
+        lockBtn.style.position = "absolute";
+        lockBtn.style.bottom = "50px";
+        lockBtn.style.right = "10px";
+        lockBtn.classList.add("btn");
+        lockBtn.style.zIndex = "999";
+        document.body.appendChild(lockBtn);
+
+        lockBtn.addEventListener("click", () => {
+            locked = !locked;
+            lockBtn.textContent = locked ? "🔓 Destravar" : "🔒 Travar";
+        });
+
     </script>
 
 </body>
