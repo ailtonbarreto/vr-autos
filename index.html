@@ -77,7 +77,7 @@
 
     <!----------------------------------------------------------------------------->
 
-    <a-scene vr-mode-ui="false: false" embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
+    <a-scene vr-mode-ui="false" embedded arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;">
 
         <a-entity id="objeto" position="0 1 -4" rotation="0 -90 0">
 
@@ -95,7 +95,7 @@
         let dragging = false;
         let pinchStartDistance = 0;
         let initialScale = 2;
-        let locked = false; // NOVO: controla se o objeto está travado
+        let locked = false; // controla se o objeto está travado
         const spinner = document.getElementById("loadingSpinner");
 
         const objeto = document.querySelector("#objeto").object3D;
@@ -133,7 +133,7 @@
         }
 
         window.addEventListener("touchstart", e => {
-            if (locked) return; // NOVO: bloqueia se travado
+            if (locked) return; // não inicia arraste se travado
             if (e.touches.length === 2) {
                 pinchStartDistance = getPinchDistance(e);
                 initialScale = modelo.getAttribute("scale").x;
@@ -145,7 +145,7 @@
         window.addEventListener("touchend", () => dragging = false);
 
         window.addEventListener("touchmove", e => {
-            if (locked) return; // NOVO: bloqueia se travado
+            if (locked) return; // não move se travado
 
             if (e.touches.length === 2) {
                 const pinchDistance = getPinchDistance(e);
@@ -157,7 +157,6 @@
                     y: newScale,
                     z: newScale
                 });
-
                 return;
             }
 
@@ -167,7 +166,6 @@
             const xNorm = (touch.clientX / window.innerWidth) * 2 - 1;
 
             const camera = document.querySelector("a-camera").object3D;
-
             const vector = new THREE.Vector3(xNorm, 0, -1);
             vector.unproject(camera);
 
@@ -179,40 +177,48 @@
             objeto.position.z = newPos.z;
         });
 
+        // Botão de travar/destravar
+        const lockBtn = document.createElement("div");
+        lockBtn.className = "btn";
+        lockBtn.id = "lockBtn";
+        lockBtn.textContent = "🔒";
+        document.querySelector(".controls-zoom").appendChild(lockBtn);
+
+        lockBtn.addEventListener("click", () => {
+            locked = !locked;
+            lockBtn.textContent = locked ? "🔓" : "🔒";
+        });
+
+        // --- Seus controles originais continuam funcionando ---
         document.querySelector("#rotateLeft").addEventListener("click", () => {
             objeto.rotation.y += THREE.Math.degToRad(3);
         });
         document.querySelector("#rotateRight").addEventListener("click", () => {
             objeto.rotation.y -= THREE.Math.degToRad(3);
         });
-
         document.querySelector("#moveUp").addEventListener("click", () => {
             objeto.position.y += 0.1;
         });
         document.querySelector("#moveDown").addEventListener("click", () => {
             objeto.position.y -= 0.1;
         });
-
         document.querySelector("#tiltForward").addEventListener("click", () => {
             objeto.rotation.x += THREE.Math.degToRad(3);
         });
         document.querySelector("#tiltBackward").addEventListener("click", () => {
             objeto.rotation.x -= THREE.Math.degToRad(3);
         });
-
         document.querySelector("#rollRight").addEventListener("click", () => {
             objeto.rotation.z += THREE.Math.degToRad(3);
         });
         document.querySelector("#rollLeft").addEventListener("click", () => {
             objeto.rotation.z -= THREE.Math.degToRad(3);
         });
-
         document.querySelector("#zoomIn").addEventListener("click", () => {
             let scale = modelo.getAttribute("scale").x;
             scale += scale * 0.15;
             modelo.setAttribute("scale", { x: scale, y: scale, z: scale });
         });
-
         document.querySelector("#zoomOut").addEventListener("click", () => {
             let scale = modelo.getAttribute("scale").x;
             scale -= scale * 0.15;
@@ -220,18 +226,15 @@
             modelo.setAttribute("scale", { x: scale, y: scale, z: scale });
         });
 
+        // --- Botões de troca de modelo ---
         const modelButtons = document.querySelectorAll(".model-btn");
-
         modelButtons.forEach(btn => {
             btn.addEventListener("click", () => {
                 spinner.classList.remove("esconder");
-
                 modelButtons.forEach(b => b.classList.remove("active"));
-
                 btn.classList.add("active");
 
                 const newModelURL = btn.dataset.src;
-
                 modelo.setAttribute("src", newModelURL);
 
                 objeto.rotation.set(0, THREE.Math.degToRad(-90), 0);
@@ -240,20 +243,6 @@
             });
         });
 
-        // NOVO: botão de travar/destravar
-        const lockBtn = document.createElement("button");
-        lockBtn.textContent = "🔒 Travar";
-        lockBtn.style.position = "absolute";
-        lockBtn.style.bottom = "50px";
-        lockBtn.style.right = "10px";
-        lockBtn.classList.add("btn");
-        lockBtn.style.zIndex = "999";
-        document.body.appendChild(lockBtn);
-
-        lockBtn.addEventListener("click", () => {
-            locked = !locked;
-            lockBtn.textContent = locked ? "🔓 Destravar" : "🔒 Travar";
-        });
 
     </script>
 
